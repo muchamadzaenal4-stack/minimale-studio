@@ -1429,8 +1429,7 @@ async function generateSchedule() {
   document.getElementById('scheduleWrap').innerHTML='<div style="text-align:center;padding:40px;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">Generating jadwal...</div>';
   var prompt='Buat jadwal konten Instagram 7 hari untuk brand fashion pria "'+currentBrand+'". Topik konteks: '+(topik||'fashion pria minimalis')+'. Gaya: '+gaya+'.\n\nFormat:\n[DAY_START]\n[DAY]\nSenin, 12 Mei\n[TOPIC]\ntopik konten\n[HOOK]\nhook menarik 1-2 kalimat\n[FORMAT]\nStorytelling/Tips/Produk/dll\n[DAY_END]\n\n(ulangi 7x)\n[END]';
   try{
-    var apiKey=getApiKey();var headers={'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};if(!apiKey){document.getElementById('scheduleWrap').innerHTML='<div style="color:#C00;padding:20px;font-size:12px">Masukkan API Key Anthropic dulu di menu Setup.</div>';return;}headers['x-api-key']=apiKey;
-    var res2=await fetch('/.netlify/functions/anthropic',{method:'POST',headers:headers,body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,messages:[{role:'user',content:prompt}]})});
+    var apiKey=getApiKey();var headers={'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};if(!apiKey){document.getElementById('scheduleWrap').innerHTML='<div style="color:#C00;padding:20px;font-size:12px">Masukkan API Key Anthropic dulu di menu Setup.</div>';return;}headers['Authorization']='Bearer '+apiKey;
     var data2=await res2.json();
     var txt2=data2.content.map(function(c){return c.text||'';}).join('');
     var days=[];
