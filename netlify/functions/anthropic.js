@@ -4,14 +4,15 @@ exports.handler = async (event) => {
       return { statusCode: 405, body: JSON.stringify({ error: { message: 'Method not allowed' } }) };
     }
     const authHeader = event.headers['authorization'] || event.headers['Authorization'];
-    if (!authHeader) {
+    const apiKey = authHeader ? authHeader.replace(/^Bearer\s+/i, '') : null;
+    if (!apiKey) {
       return { statusCode: 400, body: JSON.stringify({ error: { message: 'Missing API key' } }) };
     }
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': authHeader,
+        'Authorization': 'Bearer ' + apiKey,
       },
       body: event.body,
     });
