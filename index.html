@@ -1183,7 +1183,7 @@ async function generate() {
     'Format PERSIS:\n[TITLE]\nJUDUL\n\n[SLIDE_START]\n[LAYOUT]\nphoto-top\n[LABEL]\nnull\n[HEADLINE]\nteks\n[SUB]\nnull\n[ACCENT]\nnull\n[PHOTO]\ntrue\n[NOTE]\nalasan\n[SLIDE_END]\n\n(ulangi)\n\n[CAPTION]\ncaption 3-5 kalimat\n\n[HASHTAGS]\n#tag\n\n[END]';
 
   var msgContent = [];
-  if(inspirationPhotos.length)inspirationPhotos.forEach(function(p){msgContent.push({type:'image',source:{type:'base64',media_type:p.mime,data:p.b64}});});
+  if(inspirationPhotos.length)inspirationPhotos.forEach(function(p){msgContent.push({type:'image_url',image_url:{url:'data:'+p.mime+';base64,'+p.b64}});});
   msgContent.push({type:'text',text:prompt});
 
   var apiKey=getApiKey();
@@ -1193,12 +1193,12 @@ async function generate() {
   var __ctrl=new AbortController();
   var __to=setTimeout(function(){__ctrl.abort();},90000);
   try{
-    var res=await fetch('/.netlify/functions/anthropic',{method:'POST',signal:__ctrl.signal,headers:headers,body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3500,messages:[{role:'user',content:msgContent}]})});
+    var res=await fetch('/.netlify/functions/anthropic',{method:'POST',signal:__ctrl.signal,headers:headers,body:JSON.stringify({model:'meta-llama/llama-4-scout-17b-16e-instruct',max_tokens:3500,messages:[{role:'user',content:msgContent}]})});
     clearTimeout(__to);
     if(!res.ok)throw new Error('HTTP '+res.status+' — cek API key / koneksi');
     var data=await res.json();
     if(data.error)throw new Error(data.error.message);
-    var raw=data.content.map(function(c){return c.text||'';}).join('');
+                var raw=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
     var parsed=parseResponse(raw);
     parsed.slides=assignPhotos(parsed.slides);
     slidesData=parsed.slides;
