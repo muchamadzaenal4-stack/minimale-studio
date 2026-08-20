@@ -1189,7 +1189,7 @@ async function generate() {
   var apiKey=getApiKey();
   var headers = {'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
   if(!apiKey){showErr('Masukkan & simpan API Key Anthropic dulu di menu Setup ya.');btn.disabled=false;btn.textContent='Generate Slides →';return;}
-  headers['x-api-key']=apiKey;
+  headers['Authorization']='Bearer '+apiKey;
   var __ctrl=new AbortController();
   var __to=setTimeout(function(){__ctrl.abort();},90000);
   try{
